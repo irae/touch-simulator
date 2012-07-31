@@ -53,6 +53,75 @@
         document.body.addEventListener("touchstart", logTouch);
         document.body.addEventListener("touchmove", logTouch);
         document.body.addEventListener("touchend", logTouch);
+
+        function touchFlick(params) {
+            var step = 0,
+                config = {
+                    target: params.target || document,
+                    startX: params.startX || 0,
+                    startY: params.startY || 0,
+                    endX: params.endX || 200,
+                    endY: params.endY || 0,
+                    steps: 4,
+                    interval: 25
+                },
+                stepX = (config.endX - config.startX) / config.steps,
+                touchId = +new Date() + Math.random();
+
+
+            function doTouch() {
+
+                var evt = document.createEvent('TouchEvent'),
+                    type =  (step === 0) ? 'touchstart' :
+                            (step === config.steps) ? 'touchend' :
+                            'touchmove',
+
+                    curX = config.startX + stepX * step,
+
+                    touch = document.createTouch(window, config.target, touchId, curX, config.startY, curX, config.startY),
+                    touchList = document.createTouchList(touch);
+
+                if (type === 'touchend') {
+                    touchList = document.createTouchList();
+                }
+                evt.initTouchEvent(type, true, true, window, 0,
+                    curX, params.startY, curX, params.startY,
+                    false, false, false, false,
+                    touchList, touchList, touchList,
+                    1, 0);
+                config.target.dispatchEvent(evt);
+                if (step !== config.steps) {
+                    step++;
+                    setTimeout(doTouch, config.interval);
+                }
+            }
+            doTouch();
+        }
+
+        /*
+        touchFlick({
+            target: document.querySelector('.yui3-scrollview-content'),
+            startX: 113,
+            endX: 16,
+            startY: 560,
+            endY: 560,
+            steps: 3,
+            interval: 25
+        });
+
+
+        touchFlick({
+            target: document.querySelector('.yui3-scrollview-content'),
+            startX: 95,
+            endX: 260,
+            startY: 560,
+            endY: 560,
+            steps: 3,
+            interval: 25
+        });
+        */
+
+
     </script>
 </body>
 </html>
