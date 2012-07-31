@@ -28,7 +28,7 @@
             }
             logs.push('TouchEvent.pageX: ' + event.pageX);
             logs.push('TouchEvent.pageY: ' + event.pageY);
-            if (event.touches[0]) {
+            if (event.touches && event.touches.length) {
                 logs.push('Touch.screenX: ' + event.touches[0].screenX);
                 logs.push('Touch.screenY: ' + event.touches[0].screenY);
                 logs.push('Touch.pageX: ' + event.touches[0].pageX);
@@ -82,7 +82,7 @@
                     touchList = document.createTouchList(touch);
 
                 if (type === 'touchend') {
-                    touchList = document.createTouchList();
+                    touchList = [];
                 }
                 evt.initTouchEvent(type, true, true, window, 0,
                     curX, params.startY, curX, params.startY,
