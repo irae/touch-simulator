@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>touchlogger</title>
+    <style type="text/css">
+        .logger {pointer-events:none;}
+    </style>
+</head>
+<body>
+    <div class="logger"></div>
+    <script type="text/javascript">
+        var logger = document.getElementsByClassName('logger')[0];
+        var timeStart, timeEnd;
+
+        function log () {
+            var pre = document.createElement('pre');
+            pre.innerHTML = Array.prototype.join.apply(Array.prototype.slice.call(arguments));
+            console.log(arguments);
+            logger.appendChild(pre);
+        }
+
+        function logTouch (event) {
+            event.preventDefault();
+            var logs = [event,event.type];
+
+            if(event.screenX) {
+                logs.push('TouchEvent.screenX: ' + event.screenX);
+                logs.push('TouchEvent.screenY: ' + event.screenY);
+            }
+            logs.push('TouchEvent.pageX: ' + event.pageX);
+            logs.push('TouchEvent.pageY: ' + event.pageY);
+            if (event.touches[0]) {
+                logs.push('Touch.screenX: ' + event.touches[0].screenX);
+                logs.push('Touch.screenY: ' + event.touches[0].screenY);
+                logs.push('Touch.pageX: ' + event.touches[0].pageX);
+                logs.push('Touch.pageY: ' + event.touches[0].pageY);
+            } else {
+                logs.push('no touches');
+            }
+            if (event.type == "touchstart") {
+                timeStart = event.timeStamp;
+            }
+            if (event.type == "touchmove") {
+                logs.push('delta:' + (event.timeStamp - timeStart));
+            }
+            if (event.type == "touchend") {
+                timeEnd = event.timeStamp;
+                logs.push('delta:' + (timeEnd - timeStart));
+            }
+            console.log.apply(console,logs);
+
+        }
+
+        document.body.addEventListener("touchstart", logTouch);
+        document.body.addEventListener("touchmove", logTouch);
+        document.body.addEventListener("touchend", logTouch);
+    </script>
+</body>
+</html>
